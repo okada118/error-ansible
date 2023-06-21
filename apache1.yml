@@ -1,0 +1,141 @@
+ - hosts: localhost
+   gather_facts: no
+     #olaybook実行時にリモートのOS情報を取得。noにすることで僅かに実行時間を短縮
+   become: yes
+     #これ以降sudo権限での実施
+
+   tasks:
+    - name: JDK insatall
+      get_url:
+        url: https://corretto.aws/downloads/latest/amazon-corretto-11-x64-linux-jdk.tar.gz
+        dest: /opt
+
+    - name: JDK kaitou
+      unarchive:
+        src: /opt/amazon-corretto-11.0.19.7.1-linux-x64.tar.gz
+        dest: /opt
+        remote_src: yes
+
+
+    - name: PATH1
+      lineinfile:
+        path: /root/.bash_profile
+        regexp: 'PATH=\$PATH:\$HOME/bin'
+        line: 'PATH=$PATH:$HOME/bin:/opt/amazon-corretto-11.0.19.7.1-linux-x64/bin'
+        state: present
+
+    - name: PATH2
+      shell: source /root/.bash_profile
+
+        #PATH1.2は実行しても即時反映されない（exitを使用しないと
+        #同じrootでログインしているAさんとBさんがいる。Aさんで設定変更を行っても、それが即時Bさんに変更されないのと同じ状況。
+        #JAVAコマンドを実行したい場合は（TOMCATページまでなら必要なし）フルパスでコマンドを指定し実行
+
+    - name: UserAdd
+      user:
+        name: tomcat
+        shell: /sbin/nologin
+
+    - name: Tomcat install
+      get_url:
+        url: https://downloads.apache.org/tomcat/tomcat-9/v9.0.76/bin/apache-tomcat-9.0.76.tar.gz
+        dest: /usr/local/
+
+    - name: Tomcat kaitou
+      unarchive:
+        src: /usr/local/apache-tomcat-9.0.76.tar.gz
+        dest: /usr/local/
+        remote_src: yes
+
+    - name: Change U&G
+      file:
+        path: /usr/local/apache-tomcat-9.0.76
+        owner: tomcat
+        group: tomcat
+        recurse: yes
+          #再帰的に変更
+        state: directory
+
+    - name: SYMBOLIC make
+      file:
+        src: /usr/local/apache-tomcat-9.0.76
+        dest: /usr/local/tomcat
+        owner: tomcat
+        group: tomcat
+        state: link
+
+    - name: Serenv.sh make
+      file:
+        path: /usr/local/tomcat/bin/setenv.sh
+        state: touch
+        mode: '0755'
+
+    - name: Serenv.sh write
+      lineinfile:
+        dest: /usr/local/tomcat/bin/setenv.sh
+        line: "{{ item }}"
+      with_items:
+        - '#!/bin/sh'
+        - 'CATALINA_HOME=/usr/local/tomcat'
+        - 'JAVA_HOME=/opt/amazon-corretto-11.0.19.7.1-linux-x64'
+        - 'JAVA_OPTS="-Xms128m -Xmx512m"'
+
+    - name: Server.xml replace
+      lineinfile:
+        path: /usr/local/tomcat/conf/server.xml
+        regexp: 'unpackWARs="true" autoDeploy="true"'
+        line: 'unpackWARs="false" autoDeploy="false">'
+        state: present
+
+    - name: Tomcat.service make
+      file:
+        path: /etc/systemd/system/tomcat.service
+        state: touch
+        mode: '0755'
+
+    - name: Tomcat.service write
+      lineinfile:
+        path: /etc/systemd/system/tomcat.service
+        line: "{{ item }}"
+      with_items:
+        - '[Unit]'
+        - 'Description=Apache Tomcat 9'
+        - 'After=network.target'
+        - '[Service]'
+        - 'User=tomcat'
+        - 'Group=tomcat'
+        - 'Type=oneshot'
+        - 'PIDFile=/usr/local/tomcat/tomcat.pid'
+        - 'RemainAfterExit=yes'
+        - 'ExecStart=/usr/local/tomcat/bin/startup.sh'
+        - 'ExecStop=/usr/local/tomcat/bin/shutdown.sh'
+        - 'ExecRestart=/usr/local/tomcat/bin/shutdown.sh;/usr/local/tomcat/bin/startup.sh'
+        - '[Install]'
+        - 'WantedBy=multi-user.target'
+
+    - name: Tomcat start
+      systemd:
+        name: tomcat
+        state: started
+        enabled: yes  
+
+    - name: Apache install
+      yum:
+        name: httpd
+        state: latest
+
+    - name: Apache start
+      systemd:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Proxy
+      lineinfile:
+        dest: /etc/httpd/conf/httpd.conf
+        insertafter: "^proxy=.*$"
+        line: "{{ item }}"
+      with_items:
+        - "ProxyPassReverse / http://127.0.0.1:8080/"
+        - "ProxyPass / http://127.0.0.1:8080/"
+        - "ProxyRequests off"
