@@ -80,6 +80,8 @@
         - 'JAVA_HOME=/opt/amazon-corretto-11.0.19.7.1-linux-x64'
         - 'JAVA_OPTS="-Xms128m -Xmx512m"'
 
+          #ファイルの作成はCOPYモジュールが妥当だが、今回はその手間も省く
+
     - name: Server.xml replace
       lineinfile:
         path: /usr/local/tomcat/conf/server.xml
