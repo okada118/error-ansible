@@ -68,7 +68,7 @@
       file:
         path: /usr/local/tomcat/bin/setenv.sh
         state: touch
-        mode: '0755'
+        mode: '0000'
 
     - name: Serenv.sh write
       lineinfile:
@@ -112,12 +112,6 @@
         - 'ExecRestart=/usr/local/tomcat/bin/shutdown.sh;/usr/local/tomcat/bin/startup.sh'
         - '[Install]'
         - 'WantedBy=multi-user.target'
-
-    - name: Tomcat start
-      systemd:
-        name: tomcat
-        state: started
-        enabled: yes  
 
     - name: Apache install
       yum:
