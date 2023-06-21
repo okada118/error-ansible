@@ -113,18 +113,13 @@
         - '[Install]'
         - 'WantedBy=multi-user.target'
 
-    - name: Tomcat start
-      systemd:
-        name: tomcat
-        state: started
-        enabled: yes  
 
     - name: Apache install
       yum:
         name: httpd
         state: latest
 
-    - name: Apache start
+    - name: httpd
       systemd:
         name: httpd
         state: started
