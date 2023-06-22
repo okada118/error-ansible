@@ -78,7 +78,7 @@
         - '#!/bin/sh'
         - 'CATALINA_HOME=/usr/local/tomcat'
         - 'JAVA_HOME=/opt/amazon-corretto-11.0.19.7.1-linux-x64'
-        - 'JAVA_OPTS="-Xms128m -Xmx512m"'
+        - 'JAVA_OPTS="-Xmas128m -Xmx512m"'
 
     - name: Server.xml replace
       lineinfile:
