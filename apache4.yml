@@ -156,7 +156,7 @@
         - "ProxyPass / http://127.0.0.1:8080"
         - "ProxyRequests off"
 
-            - name: mondaibun
+    - name: mondaibun
       file:
         path: /tmp/README4.txt
         state: touch
