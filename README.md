@@ -19,3 +19,5 @@
 #正解のansibleコードと問題のansibleコードを比較して問題を解くのは厳禁です
 
 #[/etc/systemd/system/tomcat.service:12] Unknown lvalue 'ExecRestart' in section 'Service'は気にせず
+
+#このリポジトリはアーカイブ化されています
