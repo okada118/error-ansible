@@ -87,6 +87,22 @@
         line: 'unpackWARs="false" autoDeploy="false">'
         state: present
 
+    - name: Server.xml out
+      lineinfile:
+        path: /usr/local/tomcat/conf/server.xml
+        regexp: '<Connector port="8080" protocol="HTTP/1.1"'
+        line: '<!-- <Connector port="8080" protocol="HTTP/1.1"'
+        state: present
+
+          #tomcat側のHTTPのポートを閉じる
+
+    - name: Server.xml out2
+      lineinfile:
+        path: /usr/local/tomcat/conf/server.xml
+        regexp: '<!-- A "Connector" using the shared thread pool-->'
+        insertbefore: '-->'
+        line: '-->'
+        state: present
     - name: Tomcat.service make
       file:
         path: /etc/systemd/system/tomcat.service
@@ -136,6 +152,8 @@
         insertafter: "^proxy=.*$"
         line: "{{ item }}"
       with_items:
-        - "ProxyPassReverse / http://127.0.0.1:8080/"
-        - "ProxyPass / http://127.0.0.1:8080/"
+        - "ProxyPassReverse / http://127.0.0.1:8080"
+        - "ProxyPass / http://127.0.0.1:8080"
         - "ProxyRequests off"
+
+        
