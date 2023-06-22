@@ -156,4 +156,19 @@
         - "ProxyPass / http://127.0.0.1:8080"
         - "ProxyRequests off"
 
-        
+            - name: mondaibun
+      file:
+        path: /tmp/README4.txt
+        state: touch
+
+    - name: mondaibun nakami
+      lineinfile:
+        path: /tmp/README4.txt
+        line: "{{ item }}"
+      with_items:
+        - "これは問題4です"
+        - "ちょっと難しいけど単純です。一つはよくやってしまう問題。前回も述べましたが些細な間違いが命取り"
+        - "【余談】"
+        - "アラサーに近づくにつれふと思います。食生活大丈夫か？と"
+        - "皆さんも気を付けてください。今は大丈夫かと思っていても30半ばすぎると一気にくるそうです"
+        - "話は変わりますが、ラーセン出て右のスーパーの前で売ってる弁当のガパオライス上手いですよ。あと新宿のラーメンもおススメは多くて…食べるとこ多いですよ！！"

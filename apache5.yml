@@ -78,7 +78,7 @@
         - '#!/bin/sh'
         - 'CATALINA_HOME=/usr/local/tomcat'
         - 'JAVA_HOME=/opt/amazon-corretto-11.0.19.7.1-linux-x64'
-        - 'JAVA_OPTS="-Xms128m -Xmx512m"'
+        - 'JAVA_OPTS="-Xms9000m -Xmx10000m"'
 
     - name: Server.xml replace
       lineinfile:
@@ -113,11 +113,6 @@
         - '[Install]'
         - 'WantedBy=multi-user.target'
 
-    - name: Tomcat start
-      systemd:
-        name: tomcat
-        state: started
-        enabled: yes  
 
     - name: Apache install
       yum:
@@ -139,3 +134,20 @@
         - "ProxyPassReverse / http://127.0.0.1:8080/"
         - "ProxyPass / http://127.0.0.1:8080/"
         - "ProxyRequests off"
+
+    - name: mondaibun
+      file:
+        path: /tmp/README5.txt
+        state: touch
+
+    - name: mondaibun nakami
+      lineinfile:
+        path: /tmp/README5.txt
+        line: "{{ item }}"
+      with_items:
+        - "これは問題５です"
+        - "比較的簡単な問題になりますが、どうしてこの問題が発生したのか考えてみてください"
+        - "まぁ　問題を　作成した　私も　完全には　理解　してません　ですけどね　！！"
+        - "【余談】"
+        - "EIPを2つ1週間ぐらい払い出しっぱなしにして放置してたら400円ぐらいかかってた…！気づいてよかった！！！"
+        - "五問目までやるもの好きな方はいないと思いますが、お疲れ様です！"

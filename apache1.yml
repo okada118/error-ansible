@@ -134,3 +134,20 @@
         - "ProxyPassReverse / http://127.0.0.1:8080/"
         - "ProxyPass / http://127.0.0.1:8080/"
         - "ProxyRequests off"
+
+    - name: mondaibun
+      file:
+        path: /tmp/README1.txt
+        state: touch
+
+    - name: mondaibun nakami
+      lineinfile:
+        path: /tmp/README1.txt
+        line: "{{ item }}"
+      with_items:
+        - "これは問題1です"
+        - "めーーーーーーーちゃくちゃ簡単です。10秒で終わらせてください"
+        - "【余談】"
+        - "猫食（びょうしょく）文化なるものがあるそうで…。恐ろしい…。"
+        - "鶏もペットとして飼われ始めたらいつか食べれなくなる…？"
+        - "せせり　たべたい"

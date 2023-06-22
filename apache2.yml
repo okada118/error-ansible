@@ -133,3 +133,20 @@
         - "ProxyPassReverse / http://127.0.0.1:8080/"
         - "ProxyPass / http://127.0.0.1:8080/"
         - "ProxyRequests off"
+
+    - name: mondaibun
+      file:
+        path: /tmp/README2.txt
+        state: touch
+
+    - name: mondaibun nakami
+      lineinfile:
+        path: /tmp/README2.txt
+        line: "{{ item }}"
+      with_items:
+        - "これは問題2です"
+        - "単純な問題です。めちゃくちゃよくやった失敗です。たった一文のコードが全てを狂わします"
+        - "【余談】"
+        - "研修中に福利厚生でパンが届くと思いますが、私のおススメをお伝えします。"
+        - "なんかあの、オレンジの輪切りが、その、2つぐらい？乗っかったあまーいやつ、みたいな。パンです"
+        - "かなりおいしいのですが、一度かみついたらオレンジ一口で食べるしかありません"

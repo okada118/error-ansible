@@ -134,3 +134,20 @@
         - "ProxyPassReverse / http://127.0.0.1:8080/"
         - "ProxyPass / http://127.0.0.1:8080/"
         - "ProxyRequests off"
+
+    - name: mondaibun
+      file:
+        path: /tmp/README3.txt
+        state: touch
+
+    - name: mondaibun nakami
+      lineinfile:
+        path: /tmp/README3.txt
+        line: "{{ item }}"
+      with_items:
+        - "これは問題3です"
+        - "比較的単純な問題です。ちょっとふざけました。なぜその設定でなければいけないのか改めて考えましょう"
+        - "【余談】"
+        - "アラサーに近づくにつれふと思います。脳みそが衰えたな"
+        - "毎日家に帰ると勉強も多少しますが、癖でyoutubeを見てしまいます"
+        - "あれ、これ年齢関係なくない？ただの習慣…"
